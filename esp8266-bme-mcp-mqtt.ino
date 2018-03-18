@@ -82,7 +82,9 @@ void setup() {
       Serial.println("Found BME280 sensor!");
       hasBME = true;
     }
-
+    if (!hasBME && !hasMCP) {
+      Serial.println("No sensors found");
+    }
   //clean FS, for testing
   if (resetFS) {
     SPIFFS.format();
@@ -243,6 +245,9 @@ void setup() {
       dtostrf(rel_humidity, 3, 0, humidity_str);
       strcat(topic, "/humidity");
       client.publish(topic, humidity_str, true);
+    }
+    if (!hasBME && !hasMCP) {
+      client.publish(topic, "No sensor data", true);
     }
     Serial.println("Disconnect.");
     client.disconnect();
